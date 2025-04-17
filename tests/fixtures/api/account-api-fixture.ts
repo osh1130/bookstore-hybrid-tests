@@ -1,7 +1,7 @@
 import { APIResponse } from '@playwright/test';
 import * as AccountAPI from '../../api/endpoints/account';
 
-// 导出你的类型给外面用
+
 export type AccountApiFixture = {
   accountApi: {
     registerUser(user: any): Promise<APIResponse>;
@@ -9,7 +9,7 @@ export type AccountApiFixture = {
   };
 };
 
-// 不要给它写 Fixtures<…> 注解，交给 TS 自己推断
+
 export const accountFixtures = {
   accountApi: async ({ request }, use) => {
     const wrapped = {

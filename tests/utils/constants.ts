@@ -3,6 +3,7 @@ export const API_PATHS = {
     generateToken: '/Account/v1/GenerateToken',
     login: '/Account/v1/Authorized',
     books: '/BookStore/v1/Books',
+    getuser:(userID: string) =>`/Account/v1/User/${userID}`
   };
   
   export const DEFAULT_PASSWORD = 'Secure123!';
