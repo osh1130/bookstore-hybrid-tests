@@ -22,11 +22,14 @@ export async function putJson(request: APIRequestContext, url: string, data: any
   });
 }
 
-export async function deleteJson(request: APIRequestContext, url: string, data: any = {}, options = {}): Promise<APIResponse> {
+export async function deleteJson(
+  request: APIRequestContext,
+  url: string,
+  options = {}
+): Promise<APIResponse> {
   const fullUrl = url.startsWith('http') ? url : `${BASE_URL}${url}`;
-  return request.delete(fullUrl, {
-    data,
-    headers: { 'Content-Type': 'application/json' },
-    ...options,
-  });
+  return request.delete(fullUrl, { ...options });
 }
+
+
+

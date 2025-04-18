@@ -3,7 +3,8 @@ export const API_PATHS = {
     generateToken: '/Account/v1/GenerateToken',
     login: '/Account/v1/Authorized',
     books: '/BookStore/v1/Books',
-    getuser:(userID: string) =>`/Account/v1/User/${userID}`
+    getuser:(userID: string) =>`/Account/v1/User/${userID}`,
+    deleteuser: (userID: string) =>`/Account/v1/User/${userID}`
   };
   
   export const DEFAULT_PASSWORD = 'Secure123!';
@@ -11,7 +12,7 @@ export const API_PATHS = {
   export const STATUS = {
     OK: 200,
     CREATED: 201,
-    NO_CONTENT: 204,        // DELETE Unauthorized
+    NO_CONTENT: 204,        
     BAD_REQUEST: 400,
     UNAUTHORIZED: 401,      // Token 
     FORBIDDEN: 403,         // Logged in but no access

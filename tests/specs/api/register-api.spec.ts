@@ -1,7 +1,7 @@
 import {test, expect } from "../../fixtures"
 
 test.describe('User Registration', () => {
-    test('succeeds with valid input', async ({ accountApi }) => {
+    test('A01 succeeds with valid input', async ({ accountApi }) => {
         const user = {
           userName: `user_${Date.now()}`,
           password: 'Secure123!',
@@ -24,7 +24,7 @@ test.describe('User Registration', () => {
 
     test.describe('fails with weak password(1300)', () => {
       invalidPasswords.forEach(([description, password]) => {
-        test(`rejects password: "${description}"`, async ({ accountApi }) => {
+        test(`A02-03 rejects password: "${description}"`, async ({ accountApi }) => {
           const user = {
             userName: `user_${Date.now()}`,
             password,
@@ -44,7 +44,7 @@ test.describe('User Registration', () => {
     });
     
     test.describe('fails with missing required fields(1200)', () => {
-      test('fails when password is missing', async ({ accountApi }) => {
+      test('A04 fails when password is missing', async ({ accountApi }) => {
         const user = {
           userName: `user_${Date.now()}`,
           // password is missing
@@ -58,7 +58,7 @@ test.describe('User Registration', () => {
         expect(body.message).toContain('required'); 
       });
 
-      test('fails when username is missing', async ({ accountApi }) => {
+      test('A05 fails when username is missing', async ({ accountApi }) => {
         const user = {
           //missing,
           password:'Secure123!',
@@ -73,7 +73,7 @@ test.describe('User Registration', () => {
       });
     });
     
-    test('fails with duplicate username', async({ accountApi })=>{
+    test('A06 fails with duplicate username', async({ accountApi })=>{
       const user = {
         userName: process.env.USERNAME,
         password: process.env.PASSWORD,

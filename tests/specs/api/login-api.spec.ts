@@ -3,7 +3,7 @@ import { createUser } from "../../api/requests/accountRequests";
 import {test, expect } from "../../fixtures"
 
 test.describe('User Login', () => {
-    test('succeeds with valid credentials', async ({ accountApi }) => {
+    test('L01 succeeds with valid credentials', async ({ accountApi }) => {
         const user = {
           userName: process.env.USERNAME,
           password: process.env.PASSWORD,
@@ -18,7 +18,7 @@ test.describe('User Login', () => {
 
     
     test.describe('fails login with missing required fields(1200)', () => {
-      test('fails login when password is missing', async ({ accountApi }) => {
+      test('L04 fails login when password is missing', async ({ accountApi }) => {
         const user = {
           userName: process.env.USERNAME,
           // password is missing
@@ -32,7 +32,7 @@ test.describe('User Login', () => {
         expect(body.message).toContain('required'); 
       });
 
-      test('fails login when username is missing', async ({ accountApi }) => {
+      test('L05 fails login when username is missing', async ({ accountApi }) => {
         const user = {
           //missing,
           password:process.env.PASSWORD,
@@ -48,7 +48,7 @@ test.describe('User Login', () => {
     });
 
     test.describe('fails User authorization', () => {
-        test('fails with Valid userName and wrong password', async({ accountApi })=>{
+        test('L02 fails with Valid userName and wrong password', async({ accountApi })=>{
             const user = {
                 userName: process.env.USERNAME,
                 password: '12345',
@@ -60,7 +60,7 @@ test.describe('User Login', () => {
             expect(body).toHaveProperty('result','User authorization failed.');
         });
         
-        test('fails with wrong userName and Valid password', async({ accountApi })=>{
+        test('L03 fails with wrong userName and Valid password', async({ accountApi })=>{
             const user = {
                 userName: '1234567',
                 password: process.env.PASSWORD,
