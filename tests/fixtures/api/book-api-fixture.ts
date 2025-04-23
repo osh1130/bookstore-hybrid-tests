@@ -8,6 +8,7 @@ export type BookApiFixture = {
     addBooks(data: any, token: string): Promise<APIResponse>;
     deleteBook(data: any, token: string): Promise<APIResponse>;
     clearBooks(userId: string, token: string): Promise<APIResponse>;
+    putBook(isbn: string, data: any,token: string): Promise<APIResponse>;
   };
 };
 
@@ -19,6 +20,7 @@ export const bookFixtures = {
       addBooks: (data: any, token: string) => BookAPI.addBooks(request, data,token),
       deleteBook: (data: any, token: string) => BookAPI.deleteBook(request, data, token),
       clearBooks: (userId: string, token: string) => BookAPI.clearBooks(request, userId, token),
+      putBook: (isbn: string, data: any,token: string) => BookAPI.putBook(request, isbn, data,token),
     };
     await use(wrapped);
   },
