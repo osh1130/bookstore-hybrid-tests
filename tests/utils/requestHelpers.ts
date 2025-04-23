@@ -35,11 +35,21 @@ export async function deleteJson(request: APIRequestContext,url: string,options 
   });
 }
 
-export async function deleteJsonWithBody(request: APIRequestContext,url: string,data: any,options = {}): Promise<APIResponse> {
+export async function deleteJsonWithBody(
+  request: APIRequestContext,
+  url: string,
+  data: any,
+  options: { headers?: Record<string, string> } = {}
+): Promise<APIResponse> {
   const fullUrl = url.startsWith('http') ? url : `${BASE_URL}${url}`;
+  const mergedHeaders = {
+    'Content-Type': 'application/json',
+    ...(options.headers || {})
+  };
+
   return request.delete(fullUrl, {
     data,
-    headers: { 'Content-Type': 'application/json' },
+    headers: mergedHeaders,
     ...options
   });
 }

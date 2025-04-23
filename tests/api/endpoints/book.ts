@@ -18,7 +18,7 @@ export async function clearBooks(request,userId,token) {
 }
 
 export async function deleteBook(request,data,token) {
-    return deleteJsonWithBody(request, API_PATHS.books, data, {headers: { Authorization: `Bearer ${token}`}});
+    return deleteJsonWithBody(request, API_PATHS.book, data, {headers: { Authorization: `Bearer ${token}`}});
 }
 
 export async function putBook(request, isbn, data,token) {

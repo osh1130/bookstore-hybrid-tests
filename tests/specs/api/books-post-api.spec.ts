@@ -37,8 +37,8 @@ test.describe('Book API - Post requests', () => {
         const data = {
             userId,
             collectionOfIsbns: [
-                { isbn: booksData.books[1].isbn },
-                { isbn: booksData.books[2].isbn },
+                { isbn: booksData.books[Math.floor(Math.random() *9)].isbn },
+                { isbn: booksData.books[Math.floor(Math.random() *9)].isbn },
             ]
         }
         const res = await bookApi.addBooks(data, token);
