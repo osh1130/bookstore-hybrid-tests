@@ -10,14 +10,13 @@ export async function generateToken(request, user) {
 }
 
 export async function getUser(request, userID, token) {
-  const url = API_PATHS.getuser(userID);
+  //const url = API_PATHS.getuser(userID);
   return getJson(request, API_PATHS.getuser(userID), {
     headers: { Authorization: `Bearer ${token}` }
   });
 }
 
 export async function deleteUser(request, userID, token) {
-  const url = API_PATHS.deleteuser(userID);
   return deleteJson(request, API_PATHS.deleteuser(userID), {
     headers: { Authorization: `Bearer ${token}` }
   });

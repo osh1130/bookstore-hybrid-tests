@@ -68,6 +68,16 @@ export default defineConfig({
     //   name: 'Google Chrome',
     //   use: { ...devices['Desktop Chrome'], channel: 'chrome' },
     // },
+    {
+      name: 'smoke',
+      testMatch: /.*\.spec\.ts/,
+      grep: /@smoke/,
+    },
+    {
+      name: 'regression',
+      testMatch: /.*\.spec\.ts/,
+      grepInvert: /@smoke/, 
+    },
   ],
 
   /* Run your local dev server before starting the tests */

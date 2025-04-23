@@ -3,6 +3,8 @@ export const API_PATHS = {
     generateToken: '/Account/v1/GenerateToken',
     login: '/Account/v1/Authorized',
     books: '/BookStore/v1/Books',
+    book: '/BookStore/v1/Book',
+    putbook:(ISBN: string)=> `/BookStore/v1/Books/${ISBN}`,
     getuser:(userID: string) =>`/Account/v1/User/${userID}`,
     deleteuser: (userID: string) =>`/Account/v1/User/${userID}`
   };

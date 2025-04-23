@@ -3,33 +3,45 @@ import { BASE_URL } from './env';
 
 export async function getJson(request: APIRequestContext, url: string, options = {}): Promise<APIResponse> {
   const fullUrl = url.startsWith('http') ? url : `${BASE_URL}${url}`;
-  return request.get(fullUrl, { ...options });
+  return request.get(fullUrl, {
+    headers: { 'Content-Type': 'application/json' },
+    ...options
+  });
 }
 
-export async function postJson(request: APIRequestContext, url: string, data: any): Promise<APIResponse> {
+export async function postJson(request: APIRequestContext, url: string, data: any, options = {}): Promise<APIResponse> {
   const fullUrl = url.startsWith('http') ? url : `${BASE_URL}${url}`;
   return request.post(fullUrl, {
     data,
     headers: { 'Content-Type': 'application/json' },
+    ...options
   });
 }
 
-export async function putJson(request: APIRequestContext, url: string, data: any): Promise<APIResponse> {
+export async function putJson(request: APIRequestContext, url: string, data: any, options = {}): Promise<APIResponse> {
   const fullUrl = url.startsWith('http') ? url : `${BASE_URL}${url}`;
   return request.put(fullUrl, {
     data,
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json' }, 
+    ...options
   });
 }
 
-export async function deleteJson(
-  request: APIRequestContext,
-  url: string,
-  options = {}
-): Promise<APIResponse> {
+export async function deleteJson(request: APIRequestContext,url: string,options = {}): Promise<APIResponse> {
   const fullUrl = url.startsWith('http') ? url : `${BASE_URL}${url}`;
-  return request.delete(fullUrl, { ...options });
+  return request.delete(fullUrl, {
+    headers: { 'Content-Type': 'application/json' },
+    ...options
+  });
 }
 
+export async function deleteJsonWithBody(request: APIRequestContext,url: string,data: any,options = {}): Promise<APIResponse> {
+  const fullUrl = url.startsWith('http') ? url : `${BASE_URL}${url}`;
+  return request.delete(fullUrl, {
+    data,
+    headers: { 'Content-Type': 'application/json' },
+    ...options
+  });
+}
 
 
