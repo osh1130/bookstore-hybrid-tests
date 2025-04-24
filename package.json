@@ -2,7 +2,12 @@
   "name": "bookstore-hybrid-tests",
   "version": "1.0.0",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+  "test:api": "npx playwright test tests/specs/api",
+  "test:ui": "npx playwright test tests/specs/ui",
+  "test:smoke": "npx playwright test --grep @smoke --workers=1",
+  "test:api:report": "npx playwright show-report"
+},
   "keywords": [],
   "author": "",
   "license": "ISC",

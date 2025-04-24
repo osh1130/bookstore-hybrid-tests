@@ -1,0 +1,95 @@
+name: CI Tests
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: "0 1 * * *"
+
+jobs:
+  install:
+    runs-on: ubuntu-latest
+    outputs:
+      cache-hit: ${{ steps.cache.outputs.cache-hit }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - name: Cache dependencies
+        id: cache
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+      - name: Install deps
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: npm ci
+  
+  api-tests:
+  needs: install
+  runs-on: ubuntu-latest
+  env:
+    API_USER: ${{ secrets.API_USER }}
+    API_PASS: ${{ secrets.API_PASS }}
+    USERID:   ${{ secrets.USERID }} # USERID 你可能还是固定传比较方便
+  steps:
+    - uses: actions/checkout@v3
+
+    - name: Generate token from API
+      id: generate_token
+      run: |
+        echo "🔐 Generating API token..."
+        TOKEN=$(curl -s -X POST https://demoqa.com/Account/v1/GenerateToken \
+          -H "accept: application/json" \
+          -H "Content-Type: application/json" \
+          -d "{\"userName\": \"$API_USER\", \"password\": \"$API_PASS\"}" | jq -r .token)
+
+        if [ "$TOKEN" == "null" ] || [ -z "$TOKEN" ]; then
+          echo "❌ Failed to generate token"
+          exit 1
+        fi
+
+        echo "✅ Token generated"
+        echo "APITOKEN=$TOKEN" >> $GITHUB_ENV
+
+    - name: Run API Tests
+      run: npm run test:api
+
+    - name: Upload API Report
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: api-report
+        path: playwright-report
+
+
+  ui-tests:
+    needs: install
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run UI Tests
+        run: npm run test:ui
+      - name: Upload UI Report
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: ui-report
+          path: playwright-report
+
+  smoke-tests:
+    needs: install
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run Smoke Tests
+        run: npm run test:smoke
+      - name: Upload Smoke Report
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: smoke-report
+          path: playwright-report

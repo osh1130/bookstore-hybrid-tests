@@ -24,7 +24,6 @@ test.describe.serial('Book API - Delete requests', () => {
         const data = {
             userId,
             isbn: '9781449325862',
-            
         }
         const res = await bookApi.deleteBook(data, token);
         expect(res.status()).toBe(204);
