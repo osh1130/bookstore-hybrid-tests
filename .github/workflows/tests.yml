@@ -38,6 +38,8 @@ jobs:
       USERID:   ${{ secrets.USERID }}
     steps:
       - uses: actions/checkout@v3
+      - name: Restore & Install deps
+        run: npm ci 
       - name: Generate token from API
         id: generate_token
         run: |
@@ -61,6 +63,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - name: Restore & Install deps
+        run: npm ci 
       - name: Run UI Tests
         run: npm run test:ui
       
@@ -69,6 +73,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - name: Restore & Install deps
+        run: npm ci 
       - name: Run Smoke Tests
         run: npm run test:smoke
       
