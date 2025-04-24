@@ -29,41 +29,41 @@ jobs:
         run: npm ci
   
   api-tests:
-  needs: install
-  runs-on: ubuntu-latest
-  env:
-    API_USER: ${{ secrets.API_USER }}
-    API_PASS: ${{ secrets.API_PASS }}
-    USERID:   ${{ secrets.USERID }} # USERID 你可能还是固定传比较方便
-  steps:
-    - uses: actions/checkout@v3
+    needs: install
+    runs-on: ubuntu-latest
+    env:
+      API_USER: ${{ secrets.API_USER }}
+      API_PASS: ${{ secrets.API_PASS }}
+      USERID:   ${{ secrets.USERID }} # USERID 你可能还是固定传比较方便
+    steps:
+      - uses: actions/checkout@v3
 
-    - name: Generate token from API
-      id: generate_token
-      run: |
-        echo "🔐 Generating API token..."
-        TOKEN=$(curl -s -X POST https://demoqa.com/Account/v1/GenerateToken \
-          -H "accept: application/json" \
-          -H "Content-Type: application/json" \
-          -d "{\"userName\": \"$API_USER\", \"password\": \"$API_PASS\"}" | jq -r .token)
+      - name: Generate token from API
+        id: generate_token
+        run: |
+          echo "🔐 Generating API token..."
+          TOKEN=$(curl -s -X POST https://demoqa.com/Account/v1/GenerateToken \
+            -H "accept: application/json" \
+            -H "Content-Type: application/json" \
+            -d "{\"userName\": \"$API_USER\", \"password\": \"$API_PASS\"}" | jq -r .token)
 
-        if [ "$TOKEN" == "null" ] || [ -z "$TOKEN" ]; then
-          echo "❌ Failed to generate token"
-          exit 1
-        fi
+          if [ "$TOKEN" == "null" ] || [ -z "$TOKEN" ]; then
+            echo "❌ Failed to generate token"
+            exit 1
+          fi
 
-        echo "✅ Token generated"
-        echo "APITOKEN=$TOKEN" >> $GITHUB_ENV
+          echo "✅ Token generated"
+          echo "APITOKEN=$TOKEN" >> $GITHUB_ENV
 
-    - name: Run API Tests
-      run: npm run test:api
+      - name: Run API Tests
+        run: npm run test:api
 
-    - name: Upload API Report
-      if: always()
-      uses: actions/upload-artifact@v3
-      with:
-        name: api-report
-        path: playwright-report
+      - name: Upload API Report
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: api-report
+          path: playwright-report
 
 
   ui-tests:
