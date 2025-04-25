@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test:api": "npx playwright test tests/specs/api",
+    "test:api": "npx playwright test tests/specs/api --workers=4",
     "test:ui": "npx playwright test tests/specs/ui",
-    "test:smoke": "npx playwright test --grep @smoke --workers=1",
+    "test:smoke": "npx playwright test --grep @smoke --workers=4",
     "test:api:report": "npx playwright show-report"
   },
   "keywords": [],

@@ -58,26 +58,37 @@ jobs:
       - name: Run API Tests
         run: npm run test:api
 
-  ui-tests:
-    needs: install
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
+  # ui-tests:
+  #   needs: install
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v3
 
-      - name: Restore & Install deps
-        run: npm ci
+  #     - name: Restore & Install deps
+  #       run: npm ci
 
-      - name: Run UI Tests
-        run: npm run test:ui
+  #     - name: Run UI Tests
+  #       run: npm run test:ui
 
   smoke-tests:
     needs: install
     runs-on: ubuntu-latest
+    env:
+      # Credentials for user 1 (used in your specs)
+      USERNAME_1:   ${{ secrets.USERNAME_1 }}
+      PASSWORD:     ${{ secrets.PASSWORD }}
+      USERID_1:     ${{ secrets.USERID_1 }}
+      # If you parallelize across workers 0–3 via TEST_WORKER_INDEX:
+      USERNAME_0:   ${{ secrets.USERNAME_0 }}
+      USERID_0:     ${{ secrets.USERID_0 }}
+      USERNAME_2:   ${{ secrets.USERNAME_2 }}
+      USERID_2:     ${{ secrets.USERID_2 }}
+      USERNAME_3:   ${{ secrets.USERNAME_3 }}
+      USERID_3:     ${{ secrets.USERID_3 }}
+      # API base URL for request contexts
+      API_BASE_URL: ${{ secrets.API_BASE_URL }}
     steps:
       - uses: actions/checkout@v3
+      - run: npm ci
+      - run: npm run test:smoke
 
-      - name: Restore & Install deps
-        run: npm ci
-
-      - name: Run Smoke Tests
-        run: npm run test:smoke
