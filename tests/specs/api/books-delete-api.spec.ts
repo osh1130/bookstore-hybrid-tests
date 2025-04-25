@@ -2,13 +2,24 @@ import { getBooks } from "../../api/endpoints/book";
 import {test, expect } from "../../fixtures";
 import booksData from '../../data/book-data';
 
+const ENV_INDEX  = '2';
+const ENV_USER = process.env[`USERNAME_${ENV_INDEX}`]!;
+const ENV_PWD  = process.env.PASSWORD!;
+const ENV_USERID = process.env[`USERID_${ENV_INDEX}`]!;
 
-test.describe.serial('Book API - Delete requests', () => {
+test.describe('Book API - Delete requests', () => {
     let userId: string;
     let token: string;
+    
+    test.beforeAll(async ({ accountApi }) => {
+          const res = await accountApi.generateToken({ userName: ENV_USER, password: ENV_PWD });
+          const body = await res.json();
+          token = body.token;
+          userId = ENV_USERID;
+          
+    });
+
     test.beforeEach(async ({ bookApi }) => {
-      token = process.env.APITOKEN!;
-      userId = process.env.USERID!;
       await bookApi.clearBooks(userId, token);
       const data = {
         userId,
@@ -19,8 +30,6 @@ test.describe.serial('Book API - Delete requests', () => {
     });
       
     test('B08 @smoke Delete a book with valid ISBN and token', async ({ bookApi }) => {
-        token = process.env.APITOKEN!;
-        userId = process.env.USERID!;
         const data = {
             userId,
             isbn: '9781449325862',
@@ -30,14 +39,13 @@ test.describe.serial('Book API - Delete requests', () => {
     });
 
     test('B09 Delete a book without/other token', async ({ bookApi }) => {
-        token = '0';
-        userId = process.env.USERID!;
+        const badToken = 'invalid-token';
         const data = {
             userId,
             isbn: '9781449325862',
             
         }
-        const res = await bookApi.deleteBook(data, token);
+        const res = await bookApi.deleteBook(data, badToken);
         expect(res.status()).toBe(401);
         const body = await res.json();
         expect(body).toHaveProperty('code','1200');
@@ -45,8 +53,6 @@ test.describe.serial('Book API - Delete requests', () => {
     });
 
     test('B10 Delete a book with invalid ISBN', async ({ bookApi }) => {
-        token = process.env.APITOKEN!;
-        userId = process.env.USERID!;
         const data = {
             userId,
             isbn: '0',
@@ -60,8 +66,6 @@ test.describe.serial('Book API - Delete requests', () => {
     });
 
     test('B11 Delete a book with missing_fields', async ({ bookApi }) => {
-        token = process.env.APITOKEN!;
-        userId = process.env.USERID!;
         const data = {
             userId,
             isbn: '',
@@ -71,8 +75,6 @@ test.describe.serial('Book API - Delete requests', () => {
     });
 
     test('B12 Delete a book twice', async ({ bookApi }) => {
-        token = process.env.APITOKEN!;
-        userId = process.env.USERID!;
         const data = {
             userId,
             isbn: '9781449325862',

@@ -15,16 +15,19 @@ jobs:
       cache-hit: ${{ steps.cache.outputs.cache-hit }}
     steps:
       - uses: actions/checkout@v3
+
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
           node-version: '18'
+
       - name: Cache dependencies
         id: cache
         uses: actions/cache@v3
         with:
           path: ~/.npm
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+
       - name: Install deps
         if: steps.cache.outputs.cache-hit != 'true'
         run: npm ci
@@ -33,48 +36,48 @@ jobs:
     needs: install
     runs-on: ubuntu-latest
     env:
-      API_USER: ${{ secrets.API_USER }}
-      API_PASS: ${{ secrets.API_PASS }}
-      USERID:   ${{ secrets.USERID }}
+      # Credentials for user 1 (used in your specs)
+      USERNAME_1:   ${{ secrets.USERNAME_1 }}
+      PASSWORD:     ${{ secrets.PASSWORD }}
+      USERID_1:     ${{ secrets.USERID_1 }}
+      # If you parallelize across workers 0–3 via TEST_WORKER_INDEX:
+      USERNAME_0:   ${{ secrets.USERNAME_0 }}
+      USERID_0:     ${{ secrets.USERID_0 }}
+      USERNAME_2:   ${{ secrets.USERNAME_2 }}
+      USERID_2:     ${{ secrets.USERID_2 }}
+      USERNAME_3:   ${{ secrets.USERNAME_3 }}
+      USERID_3:     ${{ secrets.USERID_3 }}
+      # API base URL for request contexts
+      API_BASE_URL: ${{ secrets.API_BASE_URL }}
     steps:
       - uses: actions/checkout@v3
+
       - name: Restore & Install deps
-        run: npm ci 
-      - name: Generate token from API
-        id: generate_token
-        run: |
-          TOKEN=$(curl -s -X POST https://demoqa.com/Account/v1/GenerateToken \
-            -H "accept: application/json" \
-            -H "Content-Type: application/json" \
-            -d "{\"userName\": \"$API_USER\", \"password\": \"$API_PASS\"}" \
-            | jq -r .token)
-          if [ -z "$TOKEN" ] || [ "$TOKEN" = "null" ]; then
-            echo "Failed to generate token" >&2
-            exit 1
-          fi
-          echo "APITOKEN=$TOKEN" >> $GITHUB_ENV
+        run: npm ci
+
       - name: Run API Tests
         run: npm run test:api
-      
-        
 
   ui-tests:
     needs: install
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+
       - name: Restore & Install deps
-        run: npm ci 
+        run: npm ci
+
       - name: Run UI Tests
         run: npm run test:ui
-      
+
   smoke-tests:
     needs: install
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+
       - name: Restore & Install deps
-        run: npm ci 
+        run: npm ci
+
       - name: Run Smoke Tests
         run: npm run test:smoke
-      

@@ -68,7 +68,6 @@ test.describe('User Login', () => {
             const res = await accountApi.generateToken(user);
             expect(res.status()).toBe(200);
             const body = await res.json();
-            console.log(body)
             expect(body).toHaveProperty('status','Failed');
             expect(body).toHaveProperty('result','User authorization failed.');
         });

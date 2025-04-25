@@ -1,44 +1,39 @@
-import { getBooks } from "../../api/endpoints/book";
 import {test, expect } from "../../fixtures";
 import booksData from '../../data/book-data';
 
-
+const ENV_INDEX  = '1';
+const ENV_USER = process.env[`USERNAME_${ENV_INDEX}`]!;
+const ENV_PWD  = process.env.PASSWORD!;
+const ENV_USERID = process.env[`USERID_${ENV_INDEX}`]!;
 test.describe('Book API - Post requests', () => {
     let userId: string;
     let token: string;
-    let cleanupNeeded: boolean;
+
+    test.beforeAll(async ({ accountApi }) => {
+      const res = await accountApi.generateToken({ userName: ENV_USER, password: ENV_PWD });
+      //console.log(res);
+      const body = await res.json();
+      token = body.token;
+      userId = ENV_USERID;
+      
+    });
+
+    test.beforeEach(async ({ bookApi }) => {
+      await bookApi.clearBooks(userId, token);
+    });
+
     test.afterEach(async ({ bookApi }) => {
-        if (cleanupNeeded && userId && token && token !== '0') {
-          try {
-            const res = await Promise.race([
-              bookApi.clearBooks(userId, token),
-              new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 8000))
-            ])as Response;
-      
-            if (res.status() === 204) {
-              console.log('✅ Data cleared');
-            } else {
-              console.warn('⚠️ Unexpected cleanup status:', res.status());
-            }
-      
-          } catch (err) {
-            console.warn('❗ Cleanup failed:', err.message);
-          }
-        }
-      });
-      
-      
+      await bookApi.clearBooks(userId, token);
+    });
 
 
     test('B02 @smoke Add a book with valid ISBN and token', async ({ bookApi }) => {
-        cleanupNeeded = true;
-        token = process.env.APITOKEN!;
-        userId = process.env.USERID!;
+        const len  = booksData.books.length;
         const data = {
             userId,
             collectionOfIsbns: [
-                { isbn: booksData.books[Math.floor(Math.random() *9)].isbn },
-                { isbn: booksData.books[Math.floor(Math.random() *9)].isbn },
+                { isbn: booksData.books[Math.floor(Math.random() * len)].isbn },
+                { isbn: booksData.books[Math.floor(Math.random() * len)].isbn },
             ]
         }
         const res = await bookApi.addBooks(data, token);
@@ -47,9 +42,6 @@ test.describe('Book API - Post requests', () => {
     });
 
     test('B03 Add a book with duplicate ISBN, expect 400', async ({ bookApi }) => {
-        cleanupNeeded = false;
-        token = process.env.APITOKEN!;
-        userId = process.env.USERID!;
         const data = {
             userId,
             collectionOfIsbns: [
@@ -67,9 +59,7 @@ test.describe('Book API - Post requests', () => {
     });
 
     test('B04 Add a book without/others token, expect 401', async ({ bookApi }) => {
-        cleanupNeeded = false;
-        token = '0';
-        userId = process.env.USERID!;
+        const badToken = 'invalid-token';
         const data = {
             userId,
             collectionOfIsbns: [
@@ -77,15 +67,12 @@ test.describe('Book API - Post requests', () => {
                 { isbn: booksData.books[2].isbn },
             ]
         }
-        const res = await bookApi.addBooks(data, token);
+        const res = await bookApi.addBooks(data, badToken);
         expect(res.status()).toBe(401);
         expect(res.statusText()).toBe('Unauthorized');
     });
 
     test('B05 Add a book invalid ISBN, expect 400', async ({ bookApi }) => {
-        cleanupNeeded = false;
-        token = process.env.APITOKEN!;
-        userId = process.env.USERID!;
         const data = {
             userId,
             collectionOfIsbns: [
@@ -100,9 +87,6 @@ test.describe('Book API - Post requests', () => {
     });
     
     test('B06 Add a book missing ISBN, expect 400', async ({ bookApi }) => {
-        cleanupNeeded = false;
-        token = process.env.APITOKEN!;
-        userId = process.env.USERID!;
         const data = {
             userId,
             collectionOfIsbns: [
